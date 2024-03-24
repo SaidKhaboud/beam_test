@@ -48,14 +48,13 @@ services:
 
   postgres:
     image: postgres:latest
-    hostname: postgres
-    container_name: postgres
+    restart: always
     environment:
       POSTGRES_USER: said
       POSTGRES_PASSWORD: seedtag
       POSTGRES_DB: seedtag
     ports:
-      - "5433:5433"
+      - "5432:5432"
 
   consumer-service:
     build: consumer-service
@@ -69,7 +68,6 @@ services:
       - classification-service
       - data-streaming-service
     
-
   # listener-service:
   #   build: listener-service
   #   hostname: listener-service
