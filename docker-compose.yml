@@ -55,7 +55,7 @@ services:
       POSTGRES_PASSWORD: seedtag
       POSTGRES_DB: seedtag
     ports:
-      - "5432:5432"
+      - "5433:5433"
 
   consumer-service:
     build: consumer-service
@@ -66,8 +66,8 @@ services:
     depends_on:
       - kafka
       - postgres
-    environment:
-      KAFKA_TOPIC: your_topic_name
+      - classification-service
+      - data-streaming-service
     
 
   # listener-service:

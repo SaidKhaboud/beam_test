@@ -4,7 +4,7 @@ import re
 import datetime
 
 def classify_entities(element, entities):
-    entry = json.loads(element).values()
+    entry = json.loads(element)
     data = {"text": entry["text"]}
     label = requests.post('http://classification-service:5000/predict', json=data).json()["label"]
     pattern = r'\b(?:' + '|'.join(entities) + r')\b'

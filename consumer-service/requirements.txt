@@ -1,4 +1,4 @@
 apache-beam 
-kafka-python 
+confluent-kafka 
 psycopg2-binary
 sqlalchemy
