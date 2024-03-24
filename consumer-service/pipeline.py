@@ -1,6 +1,7 @@
 import apache_beam as beam
 from apache_beam.options.pipeline_options import PipelineOptions
 from confluent_kafka import Consumer
+import logging
 
 from utils import classify_entities
 from db_client import DBClient
@@ -9,7 +10,7 @@ class Classify(beam.DoFn):
     def process(self, element):
         classified_entities = classify_entities(element, entities)
         for entity in classified_entities:
-            print("Entity: ",entity)
+            logging.warning("Entity: %s", entity)
             yield entity
 
 class ReadFromKafka(beam.DoFn):
@@ -26,13 +27,15 @@ class ReadFromKafka(beam.DoFn):
         while True:
             msg = self.consumer.poll(1.0)
             if msg is None:
-                print("message is None")
+                logging.warning("message is None")
                 pass
             elif msg.error():
-                print("Consumer error: {}".format(msg.error()))
+                logging.warning("Consumer error: {}".format(msg.error()))
                 pass
             else:
-                yield msg.value().decode('utf-8')
+                message = msg.value().decode('utf-8')
+                logging.warning(message[:10])
+                yield message
     
     def teardown(self):
         self.consumer.close()
@@ -72,13 +75,13 @@ class WriteToDatabase(beam.DoFn):
     def process(self, element):
         try:
             # Write data to the database
-            print(element)
+            logging.warning(element)
             self.client.write(**element)
         except Exception as e:
-            print("Error:", e)
+            logging.warning("Error:", e)
 
 if __name__ == '__main__':
-    with open('./entities.txt', 'rb') as f:
+    with open('./entities.txt', 'r') as f:
         entities = f.readlines()
 
     entities = [str(entity.strip()) for entity in entities]
@@ -87,7 +90,7 @@ if __name__ == '__main__':
     db_connection_string = "postgresql+psycopg2://said:seedtag@postgres:5433/seedtag"
     # db_client = DBClient(connection_string=db_connection_string)
     # db_client.init_table()
-    print(len(entities))
-    print("pipeline initiated")
-    print("*"*10)
+    logging.warning(len(entities))
+    logging.warning("pipeline initiated")
+    logging.warning("*"*10)
     run_pipeline()
