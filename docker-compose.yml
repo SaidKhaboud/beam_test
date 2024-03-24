@@ -46,12 +46,36 @@ services:
     volumes:
       - ./data-streaming-service/:/app
 
-  listener-service:
-    build: listener-service
-    hostname: listener-service
-    container_name: listener-service
+  postgres:
+    image: postgres:latest
+    hostname: postgres
+    container_name: postgres
+    environment:
+      POSTGRES_USER: said
+      POSTGRES_PASSWORD: seedtag
+      POSTGRES_DB: seedtag
+    ports:
+      - "5432:5432"
+
+  consumer-service:
+    build: consumer-service
+    hostname: consumer-service
+    container_name: consumer-service
+    volumes:
+      - ./consumer-service/:/app
     depends_on:
       - kafka
-      - data-streaming-service
-    volumes:
-      - ./listener-service/:/app
+      - postgres
+    environment:
+      KAFKA_TOPIC: your_topic_name
+    
+
+  # listener-service:
+  #   build: listener-service
+  #   hostname: listener-service
+  #   container_name: listener-service
+  #   depends_on:
+  #     - kafka
+  #     - data-streaming-service
+  #   volumes:
+  #     - ./listener-service/:/app

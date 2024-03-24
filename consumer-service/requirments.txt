@@ -1,0 +1,4 @@
+apache-beam 
+kafka-python 
+psycopg2-binary
+sqlalchemy
