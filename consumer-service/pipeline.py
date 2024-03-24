@@ -44,6 +44,7 @@ class WriteToDatabase(beam.DoFn):
     def process(self, element):
         try:
             # Write data to the database
+            print(element)
             self.client.write(**element)
         except Exception as e:
             print("Error:", e)
@@ -55,8 +56,9 @@ if __name__ == '__main__':
     entities = [entity.strip() for entity in entities]
 
     # Set PostgreSQL connection configurations
-    db_connection_string = "dbname='seedtag' user='said' host='localhost' password='seedtag' port='5432'"
+    db_connection_string = "postgresql+psycopg2://said:seedtag@localhost:5432/seedtag"
     db_client = DBClient(connection_string=db_connection_string)
     db_client.init_table()
-    
+    print("pipeline initiated")
+    print("*"*10)
     run_pipeline()
