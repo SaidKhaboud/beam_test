@@ -58,5 +58,5 @@ if __name__ == '__main__':
     db_connection_string = "dbname='seedtag' user='said' host='localhost' password='seedtag' port='5432'"
     db_client = DBClient(connection_string=db_connection_string)
     db_client.init_table()
-
+    
     run_pipeline()
