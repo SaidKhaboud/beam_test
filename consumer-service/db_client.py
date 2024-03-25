@@ -7,7 +7,8 @@ Base = declarative_base()
 
 class Raw_Entities(Base):
     __tablename__ = "drugs"
-    entity = Column(String, primary_key=True)
+    uuid = Column(Integer, primary_key=True, autoincrement=True)
+    entity = Column(String)
     label = Column(String)
     readers = Column(Integer)
     timestamp = Column(DateTime)

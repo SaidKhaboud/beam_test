@@ -1,10 +1,11 @@
+import logging
+
 import apache_beam as beam
 from apache_beam.options.pipeline_options import PipelineOptions
 from confluent_kafka import Consumer
-import logging
-
+from database import Raw_Entities, SessionLocal as db_client
 from utils import classify_entities
-from db_client import DBClient
+
 
 class Classify(beam.DoFn):
     def process(self, element):
@@ -66,17 +67,17 @@ def run_pipeline():
                            | 'Classify Data' >> beam.ParDo(Classify()))
 
         # Write data to PostgreSQL database
-        # classified_data | 'Write to Database' >> beam.ParDo(WriteToDatabase(db_connection_string))
+        classified_data | 'Write to Database' >> beam.ParDo(WriteToDatabase())
 
 class WriteToDatabase(beam.DoFn):
-    def __init__(self, db_client):
-        self.client = db_client
-
     def process(self, element):
         try:
-            # Write data to the database
             logging.warning(element)
-            self.client.write(**element)
+            db_element = Raw_Entities(**element)
+            with db_client() as db:
+                db.add(db_element)
+                db.commit()
+
         except Exception as e:
             logging.warning("Error:", e)
 
@@ -85,12 +86,9 @@ if __name__ == '__main__':
         entities = f.readlines()
 
     entities = [str(entity.strip()) for entity in entities]
-
-    # Set PostgreSQL connection configurations
-    db_connection_string = "postgresql+psycopg2://said:seedtag@postgres:5433/seedtag"
-    # db_client = DBClient(connection_string=db_connection_string)
-    # db_client.init_table()
+    
     logging.warning(len(entities))
     logging.warning("pipeline initiated")
     logging.warning("*"*10)
+
     run_pipeline()
