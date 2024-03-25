@@ -31,7 +31,9 @@ Then start the consumer service like so:
 `docker compose up consumer-service`
 With this the pipeline will start and you will start to see the entities in your logs. This would start to ppopulate the database.
 To get the desired output, you can either connect to the postgres database using any tool or vscode extention in my case to execute this query:
+
 `SELECT entity, sum(readers) as total_readrs FROM entities WHERE timestamp > 'min_timestamp' and timestamp < 'max_timestamp' GROUP BY entity ORDER BY total_readrs DESC LIMIT N`
+
 Or, inside the search folder, I have setup a script using click, for this, you will need to have sqlalchemy, psycopg2 and click installed in your python environment, and then you can just run the main.py and pass it the n, min_ts and max_ts as command line arguments.
 I have used `"%Y-%m-%d %H:%M:%S"`as the date format, but you can just modify the format in the script and use whichever format you please.
 
