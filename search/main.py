@@ -1,11 +1,8 @@
-import datetime
 from datetime import datetime
-
+import logging
 import click
 from sqlalchemy import Column, DateTime, Integer, String, create_engine, func
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy.ext.declarative import declarative_base
-import logging
+from sqlalchemy.orm import sessionmaker, declarative_base
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
