@@ -25,10 +25,14 @@ In the database.py, I used sqlalchemy to create a model for the table, an engine
 ## How to run
 
 I put the code to my pipeline in the consumer-service folder, and created a corresponding service in the docker-compose file, in order to run the pipeline please make sure to run this command first:
+
 `docker compose up postgres zookeeper kafka classification-service data-streaming-service`
+
 This will make sure that the streaming service and classification service are up and running before we start the consumer service, otherwise you might get some odd behaviours like I did.
 Then start the consumer service like so:
+
 `docker compose up consumer-service`
+
 With this the pipeline will start and you will start to see the entities in your logs. This would start to ppopulate the database.
 To get the desired output, you can either connect to the postgres database using any tool or vscode extention in my case to execute this query:
 
