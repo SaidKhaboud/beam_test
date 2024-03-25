@@ -30,7 +30,6 @@ def search_entity(n, min_ts, max_ts):
     session = Session()
 
     logger.info('Performing query...')
-    logger.info('Performing query...')
     query = session.query(
         Raw_Entities.entity,
         func.sum(Raw_Entities.readers).label('total_readers')

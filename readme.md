@@ -10,9 +10,17 @@ I decided to use apache beam to read from kafka, because it's a really handy fra
 
 I wan't able to read messages using the default ReadFromKafka trasform or the kafka consumer from kafka-python (My guess is because the streaming service was setup using confluent's kafka), and the consumer from confluent-kafka didn't sit well with apache beam either, so as a workaround, I set up a dummy Create transform to start the pipeline, and then (I agree it's a little bit unpleasant) I made a custom ReadFromKafka DoFn that will read the data from kafka and then push it to the transforms downstream.
 
-### Classification
+### Code logic
 
-To exract the entities from the text I used a simple regex pattern, I thought about classifiying the entities beforehand, therefore I'd only use the entities that have the same labels as the text inside the pattern, but seeing as how regex works faster with more constraints I decided to leave it as is, which would also make us able to process texts from different sources at the same time.
+#### Reading data
+Like I mentioned previously, I have a dummy Create transform that returns None, and then I setup a ReafFromKafka DoFn that will replicate the same logic as in the listener service, and then yield the messages it reads.
+
+#### Classifiying the data
+To exract the entities from the text, in the classify_entities function in the utils.py file, I used a simple regex pattern, I thought about classifiying the entities beforehand, therefore I'd only use the entities that have the same labels as the text inside the pattern, but seeing as how regex works faster with more constraints I decided to leave it as is, which would also make us able to process texts from different sources at the same time.
+I then generate a dictionary for each entity, with the name, label, number of readers and timestamp that I yield to the writeToDatabase transform.
+
+#### Storing data
+In the database.py, I used sqlalchemy to create a model for the table, an engine and a session to connect to the database, and then inside the writeToDatabase transform I just add the enitities yielded by the Classify tranform.
 
 ## How to run
 

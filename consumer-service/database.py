@@ -3,33 +3,11 @@ import os
 from typing import Any
 
 from sqlalchemy import Column, DateTime, Integer, String, create_engine
-from sqlalchemy.ext.declarative import as_declarative, declarative_base, declared_attr
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, declarative_base
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-@as_declarative()
-class Base:
-    id: Any
-    __name__: str
-    # Generate __tablename__ automatically
-
-    @declared_attr
-    def __tablename__(cls) -> str:
-        return cls.__name__.lower()
-
-    def duplicate(self, **kwargs):
-        """
-        Duplicate an object, and optionally change some of its attributes
-        """
-        new_obj = self.__class__()
-        for column in self.__table__.columns:
-            if column.name not in kwargs:
-                setattr(new_obj, column.name, getattr(self, column.name))
-            else:
-                setattr(new_obj, column.name, kwargs[column.name])
-        return new_obj
-
+Base = declarative_base()
 
 class Raw_Entities(Base):
     __tablename__ = "entities"
