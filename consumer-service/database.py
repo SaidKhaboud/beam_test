@@ -32,12 +32,12 @@ class Base:
 
 
 class Raw_Entities(Base):
-    __tablename__ = "drugs"
+    __tablename__ = "entities"
     uuid = Column(Integer, primary_key=True, autoincrement=True)
-    entity = Column(String)
-    label = Column(String)
-    readers = Column(Integer)
-    timestamp = Column(DateTime)
+    entity = Column(String, name='entity')
+    label = Column(String, name='label')  
+    readers = Column(Integer, name='readers')
+    timestamp = Column(DateTime, name='timestamp')
 
 
 db_connection_string = "postgresql+psycopg2://said:seedtag@postgres:5432/seedtag"

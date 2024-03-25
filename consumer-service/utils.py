@@ -8,12 +8,11 @@ def classify_entities(element, entities):
     entry = json.loads(element)
     data = {"text": entry["text"]}
     label = requests.post('http://classification-service:5000/predict', json=data).json()["label"]
-    logging.warning("Label: %s", label)
+    logging.info("Label: %s", label)
     pattern = r'\b(?:' + '|'.join(entities) + r')\b'
 
     # Find all matches in the text
     matches = re.findall(pattern, entry["text"])
-    logging.warning("Matches: %s", matches)
     return [
         {"entity": match, 
          "label": label, 

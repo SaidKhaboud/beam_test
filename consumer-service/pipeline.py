@@ -45,22 +45,9 @@ def run_pipeline():
     # Define Apache Beam pipeline options
     options = PipelineOptions()
 
-    # Set Kafka consumer configurations
-    kafka_bootstrap_servers = 'localhost:9092'
-    kafka_topic = 'events'
-
     # Create a pipeline
     with beam.Pipeline(options=options) as pipeline:
-        # Read data from Kafka
-        kafka_consumer = Consumer({
-                'bootstrap.servers': 'kafka',
-                'group.id': 'mygroup',
-                'auto.offset.reset': 'earliest'
-            })
-
-        kafka_consumer.subscribe(['events'])
-
-        # Apply Beam transform to classify data
+        # Read data from Kafka and classify data
         classified_data = (pipeline
                            | 'Dummy transform' >> beam.Create([None])
                            | 'Kafka Consumer' >> beam.ParDo(ReadFromKafka())
@@ -85,10 +72,8 @@ if __name__ == '__main__':
     with open('./entities.txt', 'r') as f:
         entities = f.readlines()
 
-    entities = [str(entity.strip()) for entity in entities]
+    entities = [entity.strip() for entity in entities]
     
-    logging.warning(len(entities))
     logging.warning("pipeline initiated")
-    logging.warning("*"*10)
 
     run_pipeline()

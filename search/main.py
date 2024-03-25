@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 Base = declarative_base()
 
 class Raw_Entities(Base):
-    __tablename__ = "drugs"
+    __tablename__ = "entities"
     uuid = Column(Integer, primary_key=True, autoincrement=True)
     entity = Column(String, name='entity')
     label = Column(String, name='label')  
